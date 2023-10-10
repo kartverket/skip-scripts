@@ -22,10 +22,24 @@ fi
 
 ## Variables
 mode="$1"
+current_context=$(kubectl config current-context)
 # Read argument into $apps
 apps=("${@:2}")
 # The amount of time for waiting on Kubernetes operations (10 * 60 seconds, 10 minutes)
 deadline=600s
+
+# Sanity check
+read -r -p "You are currently operating against '$current_context'. Do you want to proceed with the '$mode' operation? [y/N] " response
+
+# Convert the response to lowercase and check for a 'y' or 'yes' confirmation
+case $response in
+    [yY]|[yY][eE][sS])
+        ;;
+    *)
+        echo "Operation aborted by user."
+        exit 1
+        ;;
+esac
 
 # Get unique namespaces and validate that they exists
 mapfile -t unique_namespaces < <(printf "%s\n" "${apps[@]}" | cut -d'/' -f1 | sort -u)
