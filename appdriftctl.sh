@@ -41,6 +41,12 @@ case $response in
         ;;
 esac
 
+# Authentication check
+if ! kubectl get namespaces &>/dev/null; then
+    echo "Error: You are not authenticated against the current cluster ($current_context)."
+    exit 1
+fi
+
 # Get unique namespaces and validate that they exists
 mapfile -t unique_namespaces < <(printf "%s\n" "${apps[@]}" | cut -d'/' -f1 | sort -u)
 for ns in "${unique_namespaces[@]}"; do
