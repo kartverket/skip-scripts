@@ -41,7 +41,7 @@ if [ "$DRY_RUN" -eq 1 ]; then
     echo "Would have deleted $pod"
   done
 else
-  echo "$PODS_TO_DELETE" | while read -r pod; do
-    kubectl delete pod --context="$CONTEXT" "$pod"
+  echo "$PODS_TO_DELETE" | while IFS='/' read -r namespace podName; do
+    kubectl delete pod --context="$CONTEXT" --namespace="$namespace" "$podName"
   done
 fi
