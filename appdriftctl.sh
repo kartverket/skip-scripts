@@ -41,20 +41,14 @@ case $response in
         ;;
 esac
 
+# Get unique namespaces
+mapfile -t unique_namespaces < <(printf "%s\n" "${apps[@]}" | cut -d'/' -f1 | sort -u)
+
 # Authentication check
-if ! kubectl auth can-i '*' deployments.apps -n somenamespace &>/dev/null; then
+if ! kubectl auth can-i '*' deployments.apps -n "${unique_namespaces[0]}" &>/dev/null; then
     echo "Error: You are not authenticated against the current cluster ($current_context)."
     exit 1
 fi
-
-# Get unique namespaces and validate that they exists
-mapfile -t unique_namespaces < <(printf "%s\n" "${apps[@]}" | cut -d'/' -f1 | sort -u)
-for ns in "${unique_namespaces[@]}"; do
-    if ! kubectl get namespace "$ns" &>/dev/null; then
-        echo "Error: Namespace $ns not found. Aborting."
-        exit 1
-    fi
-done
 
 # Down mode
 if [[ $mode == "down" ]]; then
