@@ -42,7 +42,7 @@ case $response in
 esac
 
 # Authentication check
-if ! kubectl get namespaces &>/dev/null; then
+if ! kubectl auth can-i '*' deployments.apps -n somenamespace &>/dev/null; then
     echo "Error: You are not authenticated against the current cluster ($current_context)."
     exit 1
 fi
