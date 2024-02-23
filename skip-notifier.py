@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 """This script checks login activity on the system and warns on Slack if a new login is detected.
-Version: 2024-02-23_01
+Version: 2024-02-23_04
 Dependencies: subprocess and slack_sdk (install with: pip3 install slack_sdk)
 Tested on python 3.10.12 and python 3.6.8 with slack_sdk v3.27.0.
 Make a notifier_config.py file with the following content:
@@ -38,6 +38,7 @@ def monitor_logins():
     """
     timestamp_file = "/tmp/notifier_last_timestamp.txt"
     username_file = "/tmp/notifier_last_username.txt"
+    NOTIFICATION_TO_SEND = None
 
     # Execute the 'last' command
     result = subprocess.run(["last", "-n", "1"], stdout=subprocess.PIPE)
@@ -96,7 +97,6 @@ def monitor_logins():
     with open(timestamp_file, "w") as file:
         file.write(current_timestamp)
     
-    # Return the notification to send
     return NOTIFICATION_TO_SEND
 
 NOTIFICATION_TO_SEND = monitor_logins()
