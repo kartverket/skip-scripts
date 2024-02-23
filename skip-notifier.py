@@ -75,7 +75,7 @@ def monitor_logins():
         return
 
     # Compare the current timestamp with the last timestamp, add to variable if different
-    if current_timestamp == last_timestamp:
+    if current_timestamp != last_timestamp:
         global NOTIFICATION_TO_SEND
         NOTIFICATION_TO_SEND = (
             ":rotating_light: "
