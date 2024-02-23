@@ -76,7 +76,6 @@ def monitor_logins():
 
     # Compare the current timestamp with the last timestamp, add to variable if different
     if current_timestamp != last_timestamp:
-        global NOTIFICATION_TO_SEND
         NOTIFICATION_TO_SEND = (
             ":rotating_light: "
             + HOSTNAME
@@ -96,12 +95,12 @@ def monitor_logins():
     # Write the current timestamp to the file
     with open(timestamp_file, "w") as file:
         file.write(current_timestamp)
+    
+    # Return the notification to send
+    return NOTIFICATION_TO_SEND
 
+NOTIFICATION_TO_SEND = monitor_logins()
 
-monitor_logins()
-
-if "NOTIFICATION_TO_SEND" in globals():
-    # send_message_to_slack(NOTIFICATION_TO_SEND)
-    print(
-        NOTIFICATION_TO_SEND
-    )  # Uncomment to print the message to the terminal for debugging
+if NOTIFICATION_TO_SEND:
+    send_message_to_slack(NOTIFICATION_TO_SEND)
+    #print(NOTIFICATION_TO_SEND) # for console output
