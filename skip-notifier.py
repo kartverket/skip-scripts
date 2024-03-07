@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 """This script checks login activity on the system and warns on Slack if a new login is detected.
-Version: 2024-02-23_04
+Version: 2024-03-07_01
 Dependencies: subprocess and slack_sdk (install with: pip3 install slack_sdk)
 Tested on python 3.10.12 and python 3.6.8 with slack_sdk v3.27.0.
 Make a notifier_config.py file with the following content:
@@ -52,6 +52,9 @@ def monitor_logins():
     # Get the username from the first line
     current_username = lines[0].split()[0]
 
+    # Get remote hostname/IP
+    remote_host = lines[0].split()[2]
+
     # Get the timestamp from the first line
     current_timestamp = lines[0].split()[6]
 
@@ -87,6 +90,8 @@ def monitor_logins():
             + "*"
             + " at "
             + current_timestamp
+            + " from "
+            + remote_host
         )
 
     # Write the current username to the file
@@ -99,8 +104,14 @@ def monitor_logins():
     
     return NOTIFICATION_TO_SEND
 
-NOTIFICATION_TO_SEND = monitor_logins()
+def main():
+    NOTIFICATION_TO_SEND = monitor_logins()
 
-if NOTIFICATION_TO_SEND:
-    send_message_to_slack(NOTIFICATION_TO_SEND)
-    #print(NOTIFICATION_TO_SEND) # for console output
+    if NOTIFICATION_TO_SEND:
+        send_message_to_slack(NOTIFICATION_TO_SEND)
+        #print(NOTIFICATION_TO_SEND) # for console output
+
+if __name__ == "__main__":
+    main()
+
+
