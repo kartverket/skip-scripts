@@ -10,3 +10,7 @@ To use add the following to your .bashrc or .zshrc file:
 ```bash
 source /path/to/kubesu.sh
 ```
+If you use fish, the same result can be achieved with:
+```bash
+alias kubesu='bash -c "source /path/to/kubesu.sh; kubesu"'
+```
